@@ -1,0 +1,22 @@
+	/**
+	* 软删除
+	*User: robot
+	*/
+	public function delete(){
+		$param = [];
+	    $data = $this->getParam('post',$param);
+
+		/*字段验证*/
+		$result = $this->validate($data,'{:convertUnderline($tableName)}.del');
+		if($result !== true){
+			return $this->error($result);
+		}
+
+		try{
+			${:convertUnderline($tableName,false)}Model = new {:convertUnderline($tableName)}Model;
+			${:convertUnderline($tableName,false)}Model->where('id',$data['id'])->delete();
+		}catch(\Exception $e){
+			return $this->error($e->getMessage());
+		}
+		return $this->success('删除成功');
+	}

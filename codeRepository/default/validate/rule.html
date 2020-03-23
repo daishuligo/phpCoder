@@ -1,0 +1,10 @@
+	/**
+	* 验证规则
+	* @return mixed|void
+	*User: robot
+	*/
+	protected $rule = [
+   <foreach name="rule" item="vo" key="key">
+	    '{$key}'=> '{$vo}',
+   </foreach>
+	];

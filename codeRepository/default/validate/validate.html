@@ -1,0 +1,20 @@
+/**
+* Created by PhpStorm.
+* User: robot
+* Date: {:date('Y-m-d',time())}
+
+* Time: {:date('H:i',time())}
+
+*/
+
+namespace {:config('code.app_namespace')}\{$moduleName}\validate;
+
+use think\Validate;
+
+class {:convertUnderline($tableName)}Validate extends Validate{
+<include file="rule" />
+
+<include file="message" />
+
+<include file="scene" />
+}

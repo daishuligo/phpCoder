@@ -1,0 +1,26 @@
+    /**
+    * 列表
+    *User: robot
+    */
+    public function getList(){
+        $param = [];
+        $data = $this->getParam('post',$param);
+
+        /*字段验证*/
+        $result = $this->validate($data,'{:convertUnderline($tableName)}.list');
+        if($result !== true){
+            return $this->error($result);
+        }
+
+        try{
+            ${:convertUnderline($tableName,false)}Model = new {:convertUnderline($tableName)}Model;
+            $result = ${:convertUnderline($tableName,false)}Model->getList($data);
+            $list = $result->toArray();
+            $page = $result->render();
+            $this->assign('list',$list);
+            $this->assign('page',$page);
+        }catch(\Exception $e){
+            return $this->error($e->getMessage());
+        }
+        return $this->success('获取成功');
+    }

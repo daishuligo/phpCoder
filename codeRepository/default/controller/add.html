@@ -1,0 +1,27 @@
+	/**
+	* 新增
+	* @return mixed|void
+	*User: robot
+	*/
+	public function add(){
+		if($this->request->isPost()){
+			$params = [];
+	        $data = $this->getParam('post',$params);
+
+			/*字段验证*/
+			$result = $this->validate($data,'{:convertUnderline($tableName)}.add');
+	        if($result !== true){
+				return $this->error($result);
+			}
+
+	        try{
+	            ${:convertUnderline($tableName,false)}Model = new {:convertUnderline($tableName)}Model;
+	            ${:convertUnderline($tableName,false)}Model->add($data);
+	        }catch(\Exception $e){
+	             return $this->error($e->getMessage());
+	        }
+	        return $this->success('新增成功');
+		}else{
+			return $this->fetch();
+		}
+	}

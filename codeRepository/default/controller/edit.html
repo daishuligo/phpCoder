@@ -1,0 +1,38 @@
+	/**
+	* 修改
+	* @return mixed|void
+	*User: ligo
+	*/
+	public function edit(){
+	    ${:convertUnderline($tableName,false)}Model = new {:convertUnderline($tableName)}Model;
+		if($this->request->isPost()){
+			$params = [];
+	        $data = $this->getParam('post',$params);
+
+			/*字段验证*/
+			$result = $this->validate($data,'{:convertUnderline($tableName)}.edit');
+	        if($result !== true){
+				return $this->error($result);
+			}
+
+	        try{
+	            ${:convertUnderline($tableName,false)}Model->update($data);
+	        }catch(\Exception $e){
+	             return $this->error($e->getMessage());
+	        }
+	        return $this->success('修改成功');
+		}else{
+			$params = [];
+			$data = $this->getParam('post',$params);
+
+			/*字段验证*/
+			$result = $this->validate($data,'{:convertUnderline($tableName)}.id');
+			if($result !== true){
+				return $this->error($result);
+			}
+
+	        $info = ${:convertUnderline($tableName,false)}Model->find($data['id']);
+	        $this->assign('info',$info);
+			return $this->fetch();
+		}
+	}

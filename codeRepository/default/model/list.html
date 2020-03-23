@@ -1,0 +1,54 @@
+    //列表信息
+    public function getList($data,$where = []){
+<foreach name="fields" item="vo" key="key">
+    <if $vo.type == 'eq'>
+
+         if(isset($data['{$key}']) && $data['$key']){
+             $where['{$key}'] = ['eq',$data['{$key}']];
+         }
+    <elseif $vo.type == 'in'>
+
+        if(isset($data['{$key}']) && $data['{$key}']){
+           $where['{$key}'] = ['in',$data['{$key}']];
+        }
+    <elseif $vo.type == 'like'>
+
+        if(isset($data['{$key}']) && $data['{$key}']){
+           $where['{$key}'] = ['like','%'.$data['{$key}'].'%'];
+        }
+    <elseif $vo.type == 'time'>
+
+        if(isset($data['start_{$key}']) && $data['start_{$key}']){
+           ${:convertUnderlineAll('start_'.$key,false)} = $data['start_{$key}'];
+        }else{
+           ${:convertUnderlineAll('start_'.$key,false)} = '';
+        }
+
+        if(isset($data['end_{$key}']) && $data['end_{$key}']){
+           ${:convertUnderlineAll('end_'.$key,false)} = $data['end_{$key}'];
+        }else{
+           ${:convertUnderlineAll('end_'.$key,false)} = '';
+        }
+
+        if(${:convertUnderlineAll('start_'.$key,false)} && ${:convertUnderlineAll('end_'.$key,false)}){
+           $where['{$key}'] = ['between',[${:convertUnderlineAll('start_'.$key,false)},${:convertUnderlineAll('end_'.$key,false)}]];
+        }elseif (${:convertUnderlineAll('start_'.$key,false)} && !${:convertUnderlineAll('end_'.$key,false)}){
+           $where['{$key}'] = ['>',${:convertUnderlineAll('start_'.$key,false)}];
+        }elseif (!${:convertUnderlineAll('start_'.$key,false)} && ${:convertUnderlineAll('end_'.$key,false)}){
+           $where['{$key}'] = ['<',${:convertUnderlineAll('end_'.$key,false)}];
+        }
+    </if>
+</foreach>
+
+        if(isset($data['size']) && is_int($data['size'])){
+           $size = $data['size'];
+        }else{
+           $size = 10;
+        }
+
+        $res = $this
+            ->where($where)
+            ->paginate($size);
+
+        return $res;
+    }

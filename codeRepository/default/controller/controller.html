@@ -1,0 +1,23 @@
+/**
+* Created by PhpStorm.
+* User: robot
+* Date: {:date('Y-m-d',time())}
+
+* Time: {:date('H:i',time())}
+
+*/
+
+namespace {:config('code.app_namespace')}\{$moduleName}\controller;
+
+use think\Controller;
+use {:config('code.app_namespace')}\{$moduleName}\model\{:convertUnderline($tableName)}Model;
+
+class {:convertUnderline($tableName)}Controller extends Controller{
+<include file="list" />
+
+<include file="add" />
+
+<include file="edit" />
+
+<include file="delete" />
+}

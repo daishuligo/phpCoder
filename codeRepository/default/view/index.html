@@ -1,0 +1,46 @@
+<literal><include file="public@header" /></literal>
+</head>
+<body>
+
+<div class="wrap js-check-wrap">
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="javascript:void(0)">列表</a></li>
+        <li><a href="<literal>{:url(</literal>'{:convertUnderline($tableName)}<literal>/add')}</literal>">新增</a></li>
+    </ul>
+
+    <form id="searchForm" class="well m-sch_condition form-inline margin-top-20" method="get" action="<literal>{:url(</literal>'{:convertUnderline($tableName)}<literal>/index')}</literal>">
+
+    </form>
+
+    <table class="table table-hover table-bordered" style="text-align: center">
+        <thead>
+            <tr>
+        <foreach name="fields" item="field">
+        <th style="text-align: center">{$field}</th>
+        </foreach>
+        <th style="text-align: center" width="400">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        <literal><foreach name="list.data" item="vo"></literal>
+            <tr>
+        <foreach name="fields" item="field">
+        <literal><td>{$vo.</literal>{$field}}</td>
+        </foreach>
+        <td>
+                    <a href="<literal>{:url(</literal>'{:convertUnderline($tableName)}<literal>/edit?id='.$vo.id)}</literal>">编辑</a>
+                    <a href="<literal>{:url(</literal>'{:convertUnderline($tableName)}<literal>/delete?id='.$vo.id)}</literal>">删除</a>
+                </td>
+            </tr>
+        <literal></foreach></literal>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <literal>{$page}</literal>
+    </div>
+</div>
+
+</body>
+</html>

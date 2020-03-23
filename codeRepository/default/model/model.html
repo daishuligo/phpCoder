@@ -1,0 +1,17 @@
+/**
+* Created by PhpStorm.
+* User: robot
+* Date: {:date('Y-m-d',time())}
+
+* Time: {:date('H:i',time())}
+
+*/
+
+namespace {:config('code.app_namespace')}\{$moduleName}\model;
+
+use think\Model;
+
+class {:convertUnderline($tableName)}Model extends Model{
+<include file="list" />
+
+}
