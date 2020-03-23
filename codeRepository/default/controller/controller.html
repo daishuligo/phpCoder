@@ -13,11 +13,15 @@ use think\Controller;
 use {:config('code.app_namespace')}\{$moduleName}\model\{:convertUnderline($tableName)}Model;
 
 class {:convertUnderline($tableName)}Controller extends Controller{
+<foreach name="methodFields" item="vo" key="key">
+<if $key == "list">
 <include file="list" />
-
+<elseif $key == "add">
 <include file="add" />
-
+<elseif $key == "edit">
 <include file="edit" />
-
+<elseif $key == "delete">
 <include file="delete" />
+</if>
+</foreach>
 }

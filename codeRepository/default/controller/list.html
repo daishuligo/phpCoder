@@ -3,7 +3,7 @@
     *User: robot
     */
     public function getList(){
-        $param = [];
+        $param = [{$methodFields.list}];
         $data = $this->getParam('post',$param);
 
         /*字段验证*/

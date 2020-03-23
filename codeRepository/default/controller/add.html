@@ -5,7 +5,7 @@
 	*/
 	public function add(){
 		if($this->request->isPost()){
-			$params = [];
+			$params = [{$methodFields.add}];
 	        $data = $this->getParam('post',$params);
 
 			/*字段验证*/
