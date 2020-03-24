@@ -76,9 +76,20 @@ class ControllerCodeController extends BaseController
         $data = $this->getParam('param',$param);
 
         $fields = [
-            'add' => [
+            'list' => [
                 'status' => [
                     'type'  => 'in',
+                    'attribute'  => 'radio',
+                    'name'  => '状态',
+                    'limit' => [
+                        'require' => '',
+                        'max'     => 50,
+                    ],
+                ],
+                'name' => [
+                    'type'  => 'in',
+                    'attribute'  => 'img',
+                    'name'  => '状态',
                     'limit' => [
                         'require' => '',
                         'max'     => 50,
@@ -86,6 +97,8 @@ class ControllerCodeController extends BaseController
                 ],
                 'start_time' => [
                     'type'  => 'time',
+                    'attribute'  => 'time',
+                    'name'  => '开始时间',
                     'limit' => [
                         'require' => '',
                         'max'     => 50,
@@ -107,6 +120,7 @@ class ControllerCodeController extends BaseController
                             $methodFields[$k][] = "'".$m."'";
                         }
                     }
+                    $methodFields[$k][] = "'size'";
                     $methodFields[$k] = implode(',',$methodFields[$k]);
                 }else{
                     foreach ($v as $m => $n){
@@ -117,8 +131,9 @@ class ControllerCodeController extends BaseController
             }
         }
 
-        $this->assign('tableName', $data['module']);
-        $this->assign('moduleName', $data['table']);
+        var_dump($data);
+        $this->assign('tableName', $data['table']);
+        $this->assign('moduleName', $data['module']);
         $this->assign('methodFields', $methodFields);
         $codelibName = $data['code_lib'] == '' ? 'default' : $data['code_lib'];
         $codeBasePath = __DIR__.'/../codeRepository/'.$codelibName;

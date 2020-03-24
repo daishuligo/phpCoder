@@ -1,0 +1,145 @@
+<literal><include file="public@header" /></literal>
+</head>
+<body>
+
+<div class="wrap js-check-wrap">
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a  a href="<literal>{:url(</literal>'{:convertUnderline($tableName)}<literal>/index')}</literal>">列表</a></li>
+        <li><a href="javascript:void(0)">编辑</a></li>
+    </ul>
+
+    <div class="row margin-top-20">
+        <div class="col-md-8">
+            <form id="addForm" action="<literal>{:url(</literal>'{:convertUnderline($tableName)}<literal>/add')}</literal>" method="post">
+                <div class="tab-content">
+                    <foreach name="fields" item="field" key="fieldkey">
+                    <if $field.attribute == 'text'>
+
+                    <div class="form-group">
+                        <label for="input-name">{$field.name}</label>
+                        <div>
+                            <input  type="text" class="form-control" name="{$fieldkey}" value="<literal>{</literal>$info.{$fieldkey}<literal>}</literal>">
+                        </div>
+                    </div>
+                    <elseif $field.attribute == 'textarea'>
+
+                    <div class="form-group">
+                        <label for="input-name">{$field.name}</label>
+                        <div>
+                            <textarea name="{$fieldkey}" cols="60" rows="5"><literal>{</literal>$info.{$fieldkey}<literal>}</literal></textarea>
+                        </div>
+                    </div>
+                    <elseif $field.attribute == 'select'>
+
+                    <div class="form-group">
+                        <label for="input-name">{$field.name}</label>
+                        <div>
+                            <select  class="selectpicker bla bla bli" name="{$fieldkey}"  data-live-search="true" >
+                                <option value="" >请选择</option>
+                                <literal>
+                                <foreach name="" item="">
+                                    <option value=""></option>
+                                </foreach>
+                                </literal>
+                            </select>
+                        </div>
+                    </div>
+                    <elseif $field.attribute == 'radio'>
+
+                    <div class="form-group">
+                        <label for="input-name">{$field.name}</label>
+                        <div class="form-check checkbox-slider--b checkbox-slider-mid" >
+                            <label>
+                                <input id="change_{$fieldkey}" type="checkbox"><span></span>
+                                <input type="hidden" id="{$fieldkey}" name="{$fieldkey}" value="<literal>{</literal>$info.{$fieldkey}<literal>}</literal>">
+                            </label>
+                        </div>
+                    </div>
+                    <elseif $field.attribute == 'img'>
+
+                    <div class="form-group">
+                        <label for="input-album">{$field.name}</label>
+                        <div class="m-album clearfix sortable">
+                            <div class="item">
+                                <input type="hidden" name="{$fieldkey}" class="form-control" id="js-icon-input-{$fieldkey}" value="<literal>{</literal>$info.{$fieldkey}<literal>}</literal>">
+                                <a href="javascript:uploadOneImage('图片上传','#js-icon-input-{$fieldkey}');">
+                                    <img src="<literal>{</literal>$info.{$fieldkey}<literal>}</literal>" id="js-icon-input-{$fieldkey}-preview" width="135" style="cursor: pointer"/>
+                                </a>
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                            </div>
+                            <div id="add_img_{$fieldkey}">
+                                <a href="javascript:void(0)" style="color: black" title="点击添加一张图片"><span class="glyphicon glyphicon-plus"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <elseif $field.attribute == 'time'>
+
+                    <div class="form-group">
+                        <label for="input-start_time">{$field.name}</label>
+                        <div>
+                            <input type="text" id="{$fieldkey}" class="form-control js-bootstrap-datetime"  autocomplete="off" value="<literal>{:date('Y-m-d H:i:s', $info.</literal>{$fieldkey}<literal>)}</literal>">
+                            <input type="hidden" id="{$fieldkey}_hid" name="{$fieldkey}" value="<literal>{</literal>$info.{$fieldkey}<literal>}</literal>">
+                        </div>
+                    </div>
+                    </if>
+                    </foreach>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<literal><script></literal>
+<foreach name="fields" item="field" key="fieldkey">
+<if $field.attribute == 'radio'>
+
+    var {:convertUnderlineAll($fieldkey,false)} = $('#{$fieldkey}').val();
+    if({:convertUnderlineAll($fieldkey,false)} == 1){
+       $('#change_{$fieldkey}').attr('checked',true);
+    }else{
+       $('#change_{$fieldkey}').attr('checked',false);
+    }
+
+    $(document).on("click","#change_{$fieldkey}",function(){
+        var {:convertUnderlineAll($fieldkey,false)} = $('#{$fieldkey}').val();
+        if({:convertUnderlineAll($fieldkey,false)} == 1){
+           var change{:convertUnderlineAll($fieldkey)} = 2;
+        }else{
+           var change{:convertUnderlineAll($fieldkey)} = 1;
+        }
+        $('#{$fieldkey}').val(change{:convertUnderlineAll($fieldkey)});
+    });
+<elseif $field.attribute == 'time'>
+
+    $('#{$fieldkey}').change(function () {
+       $('#{$fieldkey}_hid').val(dateToTimestamp($('#{$fieldkey}').val())/1000);
+    });
+<elseif $field.attribute == 'img'>
+
+    $(".m-album").on("click", "#{$fieldkey}", function(){
+        var index = $(this).prevAll().length;
+        if(index < 1){
+            var html =  '<div class="item">';
+            html +=     '<input type="hidden" name="{$fieldkey}" class="form-control" id="js-icon-input-{$fieldkey}" value="">';
+            html +=     "<a href=\"javascript:uploadOneImage('图片上传','#js-icon-input-{$fieldkey}');\">";
+            html +=         '<img src="__TMPL__/public/assets/images/default-thumbnail.png" id="js-icon-input-{$fieldkey}-preview" width="135" style="cursor: pointer"/>';
+            html +=     '</a>';
+            html +=     '<span class="glyphicon glyphicon-remove-circle"></span>';
+            html += '</div>';
+            $(this).before(html);
+        }
+    }).on("click", ".glyphicon-remove-circle", function(){
+        $(this).parent().remove();
+        $(".m-album").children().not("#{$fieldkey}").each(function(){
+            $(this).find("input").attr("id", 'js-album-input')
+            .next().attr("href", "javascript:uploadOneImage('图片上传','#js-album-input');")
+            .children().attr("id", 'js-album-input-preview');
+        });
+    });
+</if>
+</foreach>
+<literal></script></literal>
+</body>
+</html>

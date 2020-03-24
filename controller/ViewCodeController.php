@@ -15,27 +15,67 @@ class ViewCodeController extends BaseController
         $param = ['module','table','code_lib','fields'];
         $data = $this->getParam('param',$param);
 
-        $data['fields'] = ['file_size','status','name'];
+        $fields = [
+            'list' => [
+                'status' => [
+                    'type'  => 'in',
+                    'attribute'  => 'radio',
+                    'name'  => '状态',
+                    'limit' => [
+                        'require' => '',
+                        'max'     => 50,
+                    ],
+                ],
+                'name' => [
+                    'type'  => 'in',
+                    'attribute'  => 'img',
+                    'name'  => '状态',
+                    'limit' => [
+                        'require' => '',
+                        'max'     => 50,
+                    ],
+                ],
+                'start_time' => [
+                    'type'  => 'time',
+                    'attribute'  => 'time',
+                    'name'  => '开始时间',
+                    'limit' => [
+                        'require' => '',
+                        'max'     => 50,
+                    ],
+                ],
+            ],
+        ];
+
+        $methodFields = [];
+        foreach ($fields as $k => $v){
+            if($k == 'list'){
+                foreach ($v as $m => $n){
+                    $methodFields[$m] = $n;
+                }
+            }
+        }
+        var_dump($methodFields);
         //$data['table'] = $this->convertUnderline($data['table']);
         $this->assign('tableName', $data['table']);
         $this->assign('moduleName', $data['module']);
-        $this->assign('fields', $data['fields']);
+        $this->assign('fields', $methodFields);
 
         $codelibName = $data['code_lib'] == '' ? 'default' : $data['code_lib'];
         $codeBasePath = __DIR__.'/../codeRepository/'.$codelibName;
-        $template = file_get_contents($codeBasePath.'/view/index.html');//读取模板.
-        $a = $this->display($template,[],['view_path'=>$codeBasePath.'/view/'])->getContent();
+        $indexTemplate = file_get_contents($codeBasePath.'/view/index.html');//读取模板.
+        $addTemplate = file_get_contents($codeBasePath.'/view/add.html');//读取模板.
+        $editTemplate = file_get_contents($codeBasePath.'/view/edit.html');//读取模板.
+        $index = $this->display($indexTemplate,[],['view_path'=>$codeBasePath.'/view/'])->getContent();
+        $add = $this->display($addTemplate,[],['view_path'=>$codeBasePath.'/view/'])->getContent();
+        $edit = $this->display($editTemplate,[],['view_path'=>$codeBasePath.'/view/'])->getContent();
 
         $filePath = APP_PATH.'/'.$data['module'].'/view/';
         if(!file_exists($filePath)){
             FileUtil::createDir($filePath);
         }
-        file_put_contents($filePath.$this->convertUnderline($data['table']).'index.html',$a);
-        var_dump($filePath);
-        echo "<pre>";
-        print_r(PHP_HEAD );
-        echo "</pre>";
-        die;
-        print_r($this->display($template,[],[]));
+        file_put_contents($filePath.'index.html',$index);
+        file_put_contents($filePath.'add.html',$add);
+        file_put_contents($filePath.'edit.html',$edit);
     }
 }
