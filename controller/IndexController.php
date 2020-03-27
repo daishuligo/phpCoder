@@ -8,10 +8,32 @@
 
 namespace app\code\controller;
 
+use think\Db;
 
 class IndexController extends BaseController
 {
     public function index(){
+        $sql = "show tables";
+        $tableList = Db::query($sql);
+        $tableList = array_column($tableList,'Tables_in_'.config('database.database'));
+        $this->assign('tableList',$tableList);
+        $this->assign('verify',config('verify.'));
+
         return $this->fetch();
+    }
+
+    public function getFields(){
+        $table = $this->request->param('table_name');
+        if(!$table){
+            $this->result([],0,'数据表不能为空','json');
+        }
+
+        $res = $this->getTableFields($table);
+        if(!$res['status']){
+            $this->result([],0,$res['msg'],'json');
+        }
+
+
+        $this->result($res['data'],1,'获取数据表字段成功','json');
     }
 }

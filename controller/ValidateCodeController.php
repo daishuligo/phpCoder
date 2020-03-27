@@ -93,6 +93,9 @@ class ValidateCodeController extends BaseController
                     }elseif($o == 'email'){
                         $rule[$m] = $o;
                         $message[$m.'.'.$o] = $n['name'].'必须为邮箱地址';
+                    }elseif($o == 'phone'){
+                        $rule[$m] = $o;
+                        $message[$m.'.'.$o] = $n['name'].'必须为手机格式';
                     }elseif($o == 'array'){
                         $rule[$m] = $o;
                         $message[$m.'.'.$o] = $n['name'].'必须为数组类型';

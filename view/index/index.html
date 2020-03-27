@@ -2,15 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ThinkCMF5.0 代码生成</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+
+    <style>
+        #field-box{padding: 20px}
+    </style>
 </head>
 <body>
+<h1 style="background: #0B90C4;margin: 0;text-align: center;height: 100px;line-height: 100px;">ThinkCMF5.0 代码生成</h1>
 
+<div style="height: 120px;padding: 30px 20px;border: 1px solid #666666">
+    <label>请选择数据表：</label>
+    <div class="input-group">
+        <div class="input-group-btn">
+            <select id="choose_table" class="selectpicker bla bla bli"  data-live-search="true" onchange="changeTable()" >
+                <option value="" >请选择</option>
+                <foreach name="tableList" item="vo">
+                    <option value="{$vo}" >{$vo}</option>
+                </foreach>
+            </select>
+        </div>
+        <input type="text" class="form-control" placeholder="数据表功能名称" style="width: 250px">
+    </div>
+</div>
+
+<div id="field-box">
+    <div>
+        <label>选择字段user_id验证规则</label>
+
+        <div class="input-group">
+            <div class="input-group-btn">
+                <select id="choose_table" class="selectpicker bla bla bli"  data-live-search="true" multiple onchange="changeTable()" >
+                    <option value="" >请选择</option>
+                    <foreach name="verify" item="vo" key="key">
+                        <option value="{$key}" >{$vo.name}</option>
+                    </foreach>
+                </select>
+            </div>
+            <input type="text" class="form-control" placeholder="字段名称" style="width: 250px">
+        </div>
+    </div>
+</div>
+
+<div id="verify_rule_no" style="display: ">
+    <div class="input-group-btn">
+        <select id="choose_table" class="selectpicker bla bla bli"  data-live-search="true" multiple onchange="changeTable()" >
+            <option value="" >请选择</option>
+            <foreach name="verify" item="vo" key="key">
+                <option value="{$key}" >{$vo.name}</option>
+            </foreach>
+        </select>
+    </div>
+</div>
+
+<script>
+    function changeTable() {
+        var a = $('#choose_table').val();
+        if(a){
+            $.ajax({
+                type:'post',
+                url:"/code/index/getFields",
+                data:{'table_name':a},
+                dataType: "json",
+                success:function (w) {
+                    console.log(w);
+                    if(w.code == 1){
+                        var verifyHtml = $('#verify_rule_no').html();
+                        verifyHtml = '<div class="input-group-btn"><select id="choose_table" class="selectpicker bla bla bli"  data-live-search="true" multiple onchange="changeTable()" >';
+                        verifyHtml += '<option value="" >请选择</option>';
+                        verifyHtml += '<foreach name="verify" item="vo" key="key">';
+                        verifyHtml += '<option value="{$key}" >{$vo.name}</option>';
+                        verifyHtml += '</foreach>';
+                        verifyHtml += '</select></div>';
+                        console.log(verifyHtml);
+                        var _html = '';
+                        for (i=0;i < w.data.length;i++){
+                            _html += '<div style="margin-bottom: 20px"><label>选择 '+w.data[i]+' 验证规则</label>';
+                            _html += '<div class="input-group">';
+                            _html += verifyHtml;
+                            _html += '<input type="text" class="form-control" placeholder="字段名称" style="width: 250px"></div></div>';
+                        }
+                        $('#field-box').html(_html);
+                    }else{
+                        alert(w.msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
 </body>
 </html>
