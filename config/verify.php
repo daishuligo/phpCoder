@@ -8,7 +8,7 @@
 
 return [
     'require' => [
-        'name' => '毕传',
+        'name' => '必传',
         'type' => 1,
         'examples' => '',
     ],

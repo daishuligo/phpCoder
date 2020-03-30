@@ -13,11 +13,21 @@ use think\Db;
 class IndexController extends BaseController
 {
     public function index(){
+        $table = $this->request->param('table');
         $sql = "show tables";
         $tableList = Db::query($sql);
         $tableList = array_column($tableList,'Tables_in_'.config('database.database'));
         $this->assign('tableList',$tableList);
         $this->assign('verify',config('verify.'));
+
+        if(in_array($table,$tableList)){
+            $res = $this->getTableFields($table);
+            if($res['status']){
+                $this->assign('fields',$res['data']);
+            }else{
+                $this->assign('fields',[]);
+            }
+        }
 
         return $this->fetch();
     }
