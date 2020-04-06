@@ -17,6 +17,8 @@
 <body>
 <h1 style="background: #0B90C4;margin: 0;text-align: center;height: 100px;line-height: 100px;">ThinkCMF5.0 代码生成</h1>
 
+<form id="input-form" action="">
+
 <div style="height: 120px;padding: 30px 20px;border: 1px solid #666666">
     <label>请选择数据表：</label>
     <?php $tableName = input('request.table','');?>
@@ -29,7 +31,8 @@
                 </foreach>
             </select>
         </div>
-        <input type="text" class="form-control" placeholder="数据表功能名称" style="width: 250px">
+        <input type="text" id="choose_table_name" class="form-control" placeholder="数据表功能名称" style="width: 250px">
+        <input type="text" id="choose_table_module" class="form-control" placeholder="所属功能模块" style="width: 250px">
     </div>
 </div>
 
@@ -37,18 +40,35 @@
 
     <foreach name="fields" item="field">
         <div style="margin-bottom: 20px">
-            <label>选择字段{$field}验证规则</label>
+            <label>选择字段{$field}验证规则，查询方式及数据形式</label>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <select id="choose_table" class="selectpicker bla bla bli"  data-live-search="true" multiple onchange="changeVerify(this,'{$field}')">
+                    <select class="selectpicker bla bla bli"  data-live-search="true" multiple onchange="changeVerify(this,'{$field}')" name="field-{$field}">
                         <option value="" >请选择</option>
                         <foreach name="verify" item="vo" key="key">
                             <option value="{$key}-{$vo.name}-{$vo.type}-{$vo.examples}">{$vo.name}</option>
                         </foreach>
                     </select>
                 </div>
-                <input type="text" class="form-control" placeholder="字段名称" style="width: 250px">
+                <input type="text" class="form-control" id="field-{$field}-name" placeholder="字段名称" style="width: 250px">
+                <div class="input-group-btn">
+                    <select id="field-{$field}-type" class="selectpicker bla bla bli"  data-live-search="true">
+                        <option value="" >请选择字段查询类型</option>
+                        <foreach name="type" item="vo" key="key">
+                            <option value="{$key}">{$vo}</option>
+                        </foreach>
+                    </select>
+                </div>
+                <div class="input-group-btn">
+                    <select id="field-{$field}-attribute" class="selectpicker bla bla bli"  data-live-search="true">
+                        <option value="" >请选择字段属性</option>
+                        <foreach name="attribute" item="vo" key="key">
+                            <option value="{$key}">{$vo}</option>
+                        </foreach>
+                    </select>
+                </div>
             </div>
+
             <div id="rule-box-{$field}">
 
             </div>
@@ -56,46 +76,8 @@
     </foreach>
 </div>
 
-<div style="border-top: 1px solid #666666;padding: 30px 20px;">
-    <div class="checkbox">
-        <label>
-            <input type="checkbox"> 列表
-        </label>
-    </div>
-</div>
-
-<div style="border-top: 1px solid #666666;padding: 30px 20px;">
-    <div class="checkbox">
-        <label>
-            <input type="checkbox"> 新增
-        </label>
-    </div>
-</div>
-
-<div style="border-top: 1px solid #666666;padding: 30px 20px;">
-    <div class="checkbox" style="display: inline-block;margin-right: 40px">
-        <label>
-            <input type="checkbox"> 修改
-        </label>
-    </div>
-
-    <foreach name="fields" item="field">
-        <div class="checkbox" style="display: inline-block">
-            <label>
-                <input type="checkbox"> {$field}
-            </label>
-        </div>
-    </foreach>
-</div>
-
-<div style="border-top: 1px solid #666666;padding: 30px 20px;">
-    <div class="checkbox">
-        <label>
-            <input type="checkbox"> 删除
-        </label>
-    </div>
-</div>
-
+    <button type="button" onclick="createCode()">创建</button>
+</form>
 <script>
     function changeTable() {
         var a = $('#choose_table').val();
@@ -114,7 +96,7 @@
         $.each(a,function () {
             var strs = this.split("-");
             ruleList.push(strs);
-            _html += '<div class="input-group" style="margin: 10px">';
+            _html += '<div style="border-bottom: 1px solid #6dbfff"><div class="input-group" style="margin: 10px;">';
             _html += ' <span style="width: 50px" class="input-group-addon" id="basic-addon1">'+strs[1]+'</span>';
             if(strs[2] == 2){
                 _html += '<input type="text" class="form-control" id="rule-val-'+field+'-'+strs[0]+'" placeholder="'+strs[3]+'" aria-describedby="basic-addon1">';
@@ -122,11 +104,187 @@
                 _html += '<input type="text" class="form-control" disabled aria-describedby="basic-addon1">';
             }
             _html += '</div>';
+            _html += '<div class="checkbox" style="display: inline-block;margin:0 20px">';
+            _html += '<label> <input type="checkbox" id="rule-val-'+field+'-'+strs[0]+'-list" onclick="chooseMethod(this)" > 列表 </label>';
+            _html += '</div>';
+            _html += '<div class="checkbox" style="display: inline-block;margin:0 20px">';
+            _html += '<label> <input type="checkbox" id="rule-val-'+field+'-'+strs[0]+'-add" onclick="chooseMethod(this)"> 新增</label>';
+            _html += '</div>';
+            _html += '<div class="checkbox" style="display: inline-block;margin:0 20px">';
+            _html += '<label> <input type="checkbox" id="rule-val-'+field+'-'+strs[0]+'-edit" onclick="chooseMethod(this)"> 修改</label>';
+            _html += '</div>';
+            _html += '<div class="checkbox" style="display: inline-block;margin:0 20px">';
+            _html += '<label> <input type="checkbox" id="rule-val-'+field+'-'+strs[0]+'-delete" onclick="chooseMethod(this)"> 删除</label>';
+            _html += '</div>';
+            _html += '</div>';
 
         });
        $('#rule-box-'+field).html(_html);
         rule[field] = ruleList;
         console.log(rule);
+    }
+</script>
+<script>
+    function chooseMethod(obj) {
+        var value = $(obj).val();
+        console.log(value);
+        if(value == 'on'){
+            var changeValue = 'off';
+        }else{
+            var changeValue = 'on';
+        }
+        $(obj).val(changeValue);
+    }
+
+    function createCode() {
+        var postData = {};
+        var table = $('#choose_table').val();
+        var tableName = $('#choose_table_name').val();
+        var tableModule = $('#choose_table_module').val();
+        console.log(table);
+        console.log(tableName);
+        console.log(tableModule);
+        var formData = $('#input-form').serializeArray();
+
+        $.each(formData,function(index,value){
+            var tempField = value.name.substring(6);
+            var tempRule = value.value.split('-');
+
+            var tempRuleValue = '';
+            if(tempRule[2] == 2){
+                tempRuleValue = $('#rule-val-'+tempField+'-'+tempRule[0]).val();
+                if(!tempRuleValue){
+                    alert('#rule-val-'+tempField+'-'+tempRule[0]+'规则不能为空');
+                    return;
+                }
+            }
+
+            var fieldName = $('#field-'+tempField+'-name').val();
+            if(!fieldName){
+                alert(tempField+'名称不能为空');
+            }
+
+            var fieldType = $('#field-'+tempField+'-type').val();
+            var fieldAttribute = $('#field-'+tempField+'-attribute').val();
+
+
+            var fieldRuleList = $('#rule-val-'+tempField+'-'+tempRule[0]+'-list').val();
+            if(fieldRuleList == 'off'){
+                if(!postData.list){
+                    postData.list = {};
+                }
+                if(!postData.list[tempField]){
+                    postData.list[tempField] = {};
+                }
+                if(!postData.list[tempField].limit){
+                    postData.list[tempField].limit = {};
+                }
+                postData.list[tempField].type = fieldType;
+                postData.list[tempField].attribute = fieldAttribute;
+                postData.list[tempField].name = fieldName;
+                postData.list[tempField].limit[tempRule[0]] = tempRuleValue;
+            }
+
+
+            var fieldRuleAdd = $('#rule-val-'+tempField+'-'+tempRule[0]+'-add').val();
+            if(fieldRuleAdd == 'off'){
+                if(!postData.add){
+                    postData.add = {};
+                }
+                if(!postData.add[tempField]){
+                    postData.add[tempField] = {};
+                }
+                if(!postData.add[tempField].limit){
+                    postData.add[tempField].limit = {};
+                }
+                postData.add[tempField].type = fieldType;
+                postData.add[tempField].attribute = fieldAttribute;
+                postData.add[tempField].name = fieldName;
+                postData.add[tempField].limit[tempRule[0]] = tempRuleValue;
+            }
+
+            var fieldRuleEdit = $('#rule-val-'+tempField+'-'+tempRule[0]+'-edit').val();
+            if(fieldRuleEdit == 'off'){
+                if(!postData.edit){
+                    postData.edit = {};
+                }
+                if(!postData.edit[tempField]){
+                    postData.edit[tempField] = {};
+                }
+                if(!postData.edit[tempField].limit){
+                    postData.edit[tempField].limit = {};
+                }
+                postData.edit[tempField].type = fieldType;
+                postData.edit[tempField].attribute = fieldAttribute;
+                postData.edit[tempField].name = fieldName;
+                postData.edit[tempField].limit[tempRule[0]] = tempRuleValue;
+            }
+
+            var fieldRuleDelete = $('#rule-val-'+tempField+'-'+tempRule[0]+'-delete').val();
+            if(fieldRuleDelete == 'off'){
+                if(!postData.delete){
+                    postData.delete = {};
+                }
+                if(!postData.delete[tempField]){
+                    postData.delete[tempField] = {};
+                }
+                if(!postData.delete[tempField].limit){
+                    postData.delete[tempField].limit = {};
+                }
+                postData.delete[tempField].type = fieldType;
+                postData.delete[tempField].attribute = fieldAttribute;
+                postData.delete[tempField].name = fieldName;
+                postData.delete[tempField].limit[tempRule[0]] = tempRuleValue;
+            }
+        });
+        console.log(postData);
+        $.ajax({
+            type:'post',
+            url:'/code/validate_code/generateValidateCode',
+            data:{module:tableModule,table:table,fields:postData},
+            success:function (w) {
+                console.log(w);
+            },
+            error:function (w) {
+
+            }
+        });
+
+        $.ajax({
+            type:'post',
+            url:'/code/view_code/generateViewCode',
+            data:{module:tableModule,table:table,fields:postData},
+            success:function (w) {
+                console.log(w);
+            },
+            error:function (w) {
+
+            }
+        });
+
+        $.ajax({
+            type:'post',
+            url:'/code/controller_code/generateControllerCode',
+            data:{module:tableModule,table:table,fields:postData},
+            success:function (w) {
+                console.log(w);
+            },
+            error:function (w) {
+
+            }
+        });
+
+        $.ajax({
+            type:'post',
+            url:'/code/model_code/generateModelCode',
+            data:{module:tableModule,table:table,fields:postData},
+            success:function (w) {
+                console.log(w);
+            },
+            error:function (w) {
+
+            }
+        });
     }
 </script>
 </body>

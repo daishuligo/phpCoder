@@ -6,7 +6,7 @@
 	public function edit(){
 	    ${:convertUnderline($tableName,false)}Model = new {:convertUnderline($tableName)}Model;
 		if($this->request->isPost()){
-			$params = [];
+			$params = [{$methodFields.edit}];
 	        $data = $this->getParam('post',$params);
 
 			/*字段验证*/
@@ -20,10 +20,10 @@
 	        }catch(\Exception $e){
 	             return $this->error($e->getMessage());
 	        }
-	        return $this->success('修改成功');
+	        return $this->success('修改成功','index');
 		}else{
-			$params = [];
-			$data = $this->getParam('post',$params);
+			$params = ['id'];
+			$data = $this->getParam('param',$params);
 
 			/*字段验证*/
 			$result = $this->validate($data,'{:convertUnderline($tableName)}.id');

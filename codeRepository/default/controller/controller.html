@@ -13,6 +13,8 @@ use think\Controller;
 use {:config('code.app_namespace')}\{$moduleName}\model\{:convertUnderline($tableName)}Model;
 
 class {:convertUnderline($tableName)}Controller extends Controller{
+<include file="param" />
+
 <foreach name="methodFields" item="vo" key="key">
 <if $key == "list">
 <include file="list" />

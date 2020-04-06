@@ -8,4 +8,5 @@
 
 return [
     'app_namespace' => 'app',
+    'view_path' => APP_PATH.'/~MODULE~/view/',
 ];

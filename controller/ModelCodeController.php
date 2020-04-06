@@ -58,47 +58,13 @@ class ModelCodeController extends BaseController
     }
 
     public function generateModelCode(){
-        var_dump(config('code.app_namespace'));
-        var_dump(config('database.prefix'));
-
         define('PHP_HEAD', "<?php\r\n");
         $param = ['module','table','code_lib','fields'];
         $data = $this->getParam('param',$param);
 
-        $fields = [
-            'list' => [
-                'status' => [
-                    'type'  => 'in',
-                    'attribute'  => 'radio',
-                    'name'  => '状态',
-                    'limit' => [
-                        'require' => '',
-                        'max'     => 50,
-                    ],
-                ],
-                'name' => [
-                    'type'  => 'in',
-                    'attribute'  => 'img',
-                    'name'  => '状态',
-                    'limit' => [
-                        'require' => '',
-                        'max'     => 50,
-                    ],
-                ],
-                'start_time' => [
-                    'type'  => 'time',
-                    'attribute'  => 'time',
-                    'name'  => '开始时间',
-                    'limit' => [
-                        'require' => '',
-                        'max'     => 50,
-                    ],
-                ],
-            ],
-        ];
 
         $methodFields = [];
-        foreach ($fields as $k => $v){
+        foreach ($data['fields'] as $k => $v){
             if($k == 'list'){
                 foreach ($v as $m => $n){
                     $methodFields[$m] = ['type' => $n['type']];
@@ -121,7 +87,7 @@ class ModelCodeController extends BaseController
         if(!file_exists($filePath)){
             FileUtil::createDir($filePath);
         }
-        file_put_contents($filePath.$this->convertUnderline($data['table']).'Model.php', PHP_HEAD.$a);
+        file_put_contents($filePath.convertUnderline($data['table']).'Model.php', PHP_HEAD.$a);
 
     }
 }

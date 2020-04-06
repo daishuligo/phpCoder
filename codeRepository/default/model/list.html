@@ -3,7 +3,7 @@
 <foreach name="fields" item="vo" key="key">
     <if $vo.type == 'eq'>
 
-         if(isset($data['{$key}']) && $data['$key']){
+         if(isset($data['{$key}']) && $data['{$key}']){
              $where['{$key}'] = ['eq',$data['{$key}']];
          }
     <elseif $vo.type == 'in'>
@@ -16,7 +16,7 @@
         if(isset($data['{$key}']) && $data['{$key}']){
            $where['{$key}'] = ['like','%'.$data['{$key}'].'%'];
         }
-    <elseif $vo.type == 'time'>
+    <elseif $vo.type == 'between'>
 
         if(isset($data['start_{$key}']) && $data['start_{$key}']){
            ${:convertUnderlineAll('start_'.$key,false)} = $data['start_{$key}'];

@@ -21,3 +21,10 @@ function convertUnderlineAll ( $str , $ucfirst = true)
     $str = str_replace(' ','',lcfirst($str));
     return $ucfirst ? ucfirst($str) : $str;
 }
+
+function convertPrefix ($str)
+{
+    $prefix = config('database.prefix');
+    $str = substr($str,strlen($prefix));
+    return $str;
+}

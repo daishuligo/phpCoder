@@ -19,6 +19,8 @@ class IndexController extends BaseController
         $tableList = array_column($tableList,'Tables_in_'.config('database.database'));
         $this->assign('tableList',$tableList);
         $this->assign('verify',config('verify.'));
+        $this->assign('type',config('type.'));
+        $this->assign('attribute',config('attribute.'));
 
         if(in_array($table,$tableList)){
             $res = $this->getTableFields($table);
@@ -27,6 +29,8 @@ class IndexController extends BaseController
             }else{
                 $this->assign('fields',[]);
             }
+        }else{
+            $this->assign('fields',[]);
         }
 
         return $this->fetch();

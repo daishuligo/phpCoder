@@ -1,0 +1,16 @@
+	/**
+	* 获取参数
+	* @return mixed|void
+	*User: robot
+	*/
+	protected function getParam($type,$param){
+		$data = [];
+		if(!in_array($type,['get','post'])){
+			$type = 'param';
+		}
+		foreach ($param as $v){
+			$data[$v] = $this->request->$type($v) !== null ? $this->request->$type($v) : '';
+		}
+
+		return $data;
+	}

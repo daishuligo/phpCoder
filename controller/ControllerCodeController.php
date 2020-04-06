@@ -75,41 +75,9 @@ class ControllerCodeController extends BaseController
         $param = ['module','table','code_lib','fields'];
         $data = $this->getParam('param',$param);
 
-        $fields = [
-            'list' => [
-                'status' => [
-                    'type'  => 'in',
-                    'attribute'  => 'radio',
-                    'name'  => '状态',
-                    'limit' => [
-                        'require' => '',
-                        'max'     => 50,
-                    ],
-                ],
-                'name' => [
-                    'type'  => 'in',
-                    'attribute'  => 'img',
-                    'name'  => '状态',
-                    'limit' => [
-                        'require' => '',
-                        'max'     => 50,
-                    ],
-                ],
-                'start_time' => [
-                    'type'  => 'time',
-                    'attribute'  => 'time',
-                    'name'  => '开始时间',
-                    'limit' => [
-                        'require' => '',
-                        'max'     => 50,
-                    ],
-                ],
-            ],
-        ];
-
         $method = ['list','add','edit','delete'];
         $methodFields = [];
-        foreach ($fields as $k => $v){
+        foreach ($data['fields'] as $k => $v){
             if(in_array($k,$method)){
                 if($k == 'list'){
                     foreach ($v as $m => $n){
@@ -145,7 +113,7 @@ class ControllerCodeController extends BaseController
             FileUtil::createDir($filePath);
         }
 
-        file_put_contents($filePath.$this->convertUnderline($data['table'].'Controller.php'), PHP_HEAD.$a);
+        file_put_contents($filePath.convertUnderline($data['table'].'Controller.php'), PHP_HEAD.$a);
 
     }
 }

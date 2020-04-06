@@ -15,7 +15,7 @@ class ViewCodeController extends BaseController
         $param = ['module','table','code_lib','fields'];
         $data = $this->getParam('param',$param);
 
-        $fields = [
+        /*$fields = [
             'list' => [
                 'status' => [
                     'type'  => 'in',
@@ -45,18 +45,18 @@ class ViewCodeController extends BaseController
                     ],
                 ],
             ],
-        ];
+        ];*/
 
         $methodFields = [];
-        foreach ($fields as $k => $v){
+        foreach ($data['fields'] as $k => $v){
             if($k == 'list'){
                 foreach ($v as $m => $n){
                     $methodFields[$m] = $n;
                 }
             }
         }
-        var_dump($methodFields);
-        //$data['table'] = $this->convertUnderline($data['table']);
+
+
         $this->assign('tableName', $data['table']);
         $this->assign('moduleName', $data['module']);
         $this->assign('fields', $methodFields);
@@ -70,7 +70,9 @@ class ViewCodeController extends BaseController
         $add = $this->display($addTemplate,[],['view_path'=>$codeBasePath.'/view/'])->getContent();
         $edit = $this->display($editTemplate,[],['view_path'=>$codeBasePath.'/view/'])->getContent();
 
-        $filePath = APP_PATH.'/'.$data['module'].'/view/';
+        $filePath = config('code.view_path').convertPrefix($data['table']).'/';
+        $filePath = str_replace('~MODULE~',$data['module'],$filePath);
+        var_dump($filePath);
         if(!file_exists($filePath)){
             FileUtil::createDir($filePath);
         }

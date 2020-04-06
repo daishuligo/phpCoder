@@ -16,11 +16,11 @@
 
 	        try{
 	            ${:convertUnderline($tableName,false)}Model = new {:convertUnderline($tableName)}Model;
-	            ${:convertUnderline($tableName,false)}Model->add($data);
+	            ${:convertUnderline($tableName,false)}Model->save($data);
 	        }catch(\Exception $e){
 	             return $this->error($e->getMessage());
 	        }
-	        return $this->success('新增成功');
+	        return $this->success('新增成功','index');
 		}else{
 			return $this->fetch();
 		}

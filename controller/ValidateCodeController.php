@@ -16,7 +16,7 @@ class ValidateCodeController extends BaseController
         $param = ['module','table','code_lib','fields'];
         $data = $this->getParam('param',$param);
 
-        $fields = [
+        /*$fields = [
             'list' => [
                 'status' => [
                     'type'  => 'in',
@@ -75,12 +75,13 @@ class ValidateCodeController extends BaseController
                     ],
                 ],
             ],
-        ];
+        ];*/
+
 
         $rule = [];
         $message = [];
         $scene = [];
-        foreach ($fields as $k => $v){
+        foreach ($data['fields'] as $k => $v){
             foreach ($v as $m => $n){
                 foreach ($n['limit'] as $o => $p){
                     $scene[$k][] = "'".$m.".".$o."'";
@@ -187,7 +188,7 @@ class ValidateCodeController extends BaseController
         if(!file_exists($filePath)){
             FileUtil::createDir($filePath);
         }
-        file_put_contents($filePath.$this->convertUnderline($data['table']).'Validate.php', PHP_HEAD.$a);
+        file_put_contents($filePath.convertUnderline($data['table']).'Validate.php', PHP_HEAD.$a);
         var_dump($filePath);
         echo "<pre>";
         print_r(PHP_HEAD .$a);

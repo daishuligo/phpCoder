@@ -7,6 +7,11 @@
  */
 
 return [
+    'none' => [
+        'name' => '无验证',
+        'type' => 0,
+        'examples' => '',
+    ],
     'require' => [
         'name' => '必传',
         'type' => 1,

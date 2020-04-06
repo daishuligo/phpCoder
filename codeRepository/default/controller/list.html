@@ -2,9 +2,9 @@
     * 列表
     *User: robot
     */
-    public function getList(){
+    public function index(){
         $param = [{$methodFields.list}];
-        $data = $this->getParam('post',$param);
+        $data = $this->getParam('param',$param);
 
         /*字段验证*/
         $result = $this->validate($data,'{:convertUnderline($tableName)}.list');
